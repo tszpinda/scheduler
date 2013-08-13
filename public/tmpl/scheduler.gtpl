@@ -9,34 +9,34 @@
       
       <script type="text/javascript" charset="utf-8">
          function init() {
-            //scheduler.config.xml_date="%Y-%m-%d %H:%i";
+            
             scheduler.config.xml_date="%d-%m-%Y %H:%i";
 
-      var sections=[
-         {key:1, label:"James Smith"},
-         {key:2, label:"John Williams"},
-         {key:3, label:"David Miller"},
-         {key:4, label:"Linda Brown"}
-      ];
+      /*      var sections=[333
+               {key:1, label:"James Smith"},
+               {key:2, label:"John Williams"},
+               {key:3, label:"David Miller"},
+               {key:4, label:"Linda Brown"}
+            ];
+            
+            scheduler.locale.labels.unit_tab = "Trucks"
+            scheduler.locale.labels.section_custom="Assigned to";
+            scheduler.config.first_hour = 8;
+            scheduler.config.multi_day = true;
+            scheduler.config.details_on_create=true;
+            scheduler.config.details_on_dblclick=true;
+            scheduler.config.xml_date="%Y-%m-%d %H:%i";
+            scheduler.templates.event_class=function(s,e,ev){ return ev.custom?"custom":""; };
+            scheduler.config.lightbox.sections=[   
+               {name:"description", height:130, map_to:"text", type:"textarea" , focus:true},
+               {name:"custom", height:23, type:"select", options:sections, map_to:"section_id" },
+               {name:"time", height:72, type:"time", map_to:"auto"}
+            ]
       
-      scheduler.locale.labels.unit_tab = "Trucks"
-      scheduler.locale.labels.section_custom="Assigned to";
-      scheduler.config.first_hour = 8;
-      scheduler.config.multi_day = true;
-      scheduler.config.details_on_create=true;
-      scheduler.config.details_on_dblclick=true;
-      scheduler.config.xml_date="%Y-%m-%d %H:%i";
-      scheduler.templates.event_class=function(s,e,ev){ return ev.custom?"custom":""; };
-      scheduler.config.lightbox.sections=[   
-         {name:"description", height:130, map_to:"text", type:"textarea" , focus:true},
-         {name:"custom", height:23, type:"select", options:sections, map_to:"section_id" },
-         {name:"time", height:72, type:"time", map_to:"auto"}
-      ]
+            scheduler.createUnitsView("unit","section_id",sections);
       
-      scheduler.createUnitsView("unit","section_id",sections);
-      
-
-            scheduler.init('scheduler',new Date(),"unit");
+*/
+            scheduler.init('scheduler',new Date(),"week");
             scheduler.load("/scheduler/event/1", "json");
             
          }
