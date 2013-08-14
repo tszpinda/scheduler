@@ -8,21 +8,9 @@ import (
 )
 
 func Mount() {
-	pfx := "/ui/public/static/img/"
-	h := http.StripPrefix(pfx, http.FileServer(http.Dir("./public/static/img")))
-	http.Handle(pfx, h)
-
-	serveSingle("/ui/static/js/main.js", "./public/static/js/main.js")
-	serveSingle("/ui/static/js/jquery.js", "./public/static/js/jquery.js")
-	serveSingle("/ui/static/bootstrap/js/bootstrap.js", "./public/static/bootstrap/js/bootstrap.js")
-	serveSingle("/ui/static/bootstrap/css/bootstrap.css", "./public/static/bootstrap/css/bootstrap.min.css")
-	serveSingle("/ui/static/bootstrap/css/bootstrap-responsive.css", "./public/static/bootstrap/css/bootstrap-responsive.min.css")
-	serveSingle("/ui/static/bootstrap/css/main.css", "./public/static/bootstrap/css/main.css")
-	serveSingle("/favicon.ico", "./public/static/favicon.ico")
-
-	serveSingle("/ui/static/dhtmlxscheduler.css", "./public/static/dhtmlxscheduler.css")
-	serveSingle("/ui/static/dhtmlxscheduler.js", "./public/static/dhtmlxscheduler.js")
-	serveSingle("/ui/static/dhtmlxscheduler-units.js", "./public/static/dhtmlxscheduler-units.js")
+	//serve public/static directory
+	fileHandler := http.StripPrefix("/ui/static/", http.FileServer(http.Dir("./public/static")))
+	http.Handle("/ui/static/", fileHandler)
 
 	http.HandleFunc("/ui/scheduler", schedulerPage)
 }

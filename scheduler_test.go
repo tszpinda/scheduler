@@ -1,4 +1,4 @@
-package maina
+package main
 
 import (
 	"encoding/json"

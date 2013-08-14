@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/gorest"
 	"encoding/json"
 	"fmt"
+	//mux "github.com/gorilla/mux"
 	view "github.com/tszpinda/scheduler/web"
 	"net/http"
 	"os"
@@ -50,8 +51,8 @@ func main() {
 	gorest.RegisterService(new(SchedulerService))
 
 	view.Mount()
-
 	http.Handle("/", gorest.Handle())
+
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
