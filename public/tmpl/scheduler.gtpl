@@ -4,8 +4,7 @@
       <title>Search</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="shortcut icon" href="/ui/static/favicon.ico">
-      <link href="/ui/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
-      <link href="/ui/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+      
       <link href="/ui/static/bootstrap/css/main.css" rel="stylesheet" media="screen">
       <link href="/ui/static/scheduler/dhtmlxscheduler.css" rel="stylesheet" media="screen">
       <script src="/ui/static/js/jquery.js"></script>
@@ -17,20 +16,34 @@
       <script type="text/javascript" charset="utf-8">
 
          $(function(){
-                        //scheduler.config.xml_date="%d-%m-%Y %H:%i";
-            //scheduler.init('scheduler',new Date(),"week");
-            //scheduler.load("/scheduler/event/1", "json");            
+             var sections = scheduler.serverList("type");
+             var asections = [ 
+               {key:1, label:"Truck - 10T VA56XZA"},
+               {key:2, label:"Truck - 15T AA55ASA"},
+               {key:3, label:"Truck - 20T RA59KDA"},
+               {key:4, label:"Truck - 20T XA56CAA"}
+             ];
+             scheduler.createUnitsView({
+                name:"unit",
+                property:"type",
+                list:sections});
+      
+            //section config
+            scheduler.config.first_hour = 8;
+            scheduler.locale.labels.unit_tab = "Trucks"
+
 
              $("#scheduler").dhx_scheduler({
                  xml_date:"%d-%m-%Y %H:%i",
                  date:new Date(),
-                 mode:"week",
+                 mode:"unit",
                  details_on_create:true,
                  details_on_dblclick:true
              });
           
-             scheduler.load("/scheduler/event/1", "json");
-             
+             //scheduler.load("/scheduler/events/1", "json");
+             scheduler.load("/ui/static/data.json", "json");
+             //scheduler.load("/ui/static/data.xml");
          });
          //function init() {
             
@@ -75,6 +88,7 @@
             <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
             <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
             <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+            <div class="dhx_cal_tab" name="unit_tab" style="right:280px;"></div>
          </div>
          <div class="dhx_cal_header">
          </div>

@@ -1,0 +1,30 @@
+{collections : [
+      {
+         "id":1,
+         "type":1,
+         "text":"BA1 3AX - 15T Concrete",
+         "start_date":"15-08-2013 00:08",
+         "end_date":"15-08-2013 00:08"
+      },
+      {
+         "id":2,
+         "type":2,
+         "text":"BA1 3AX - Hire Pickup",
+         "start_date":"14-08-2013 19:08",
+         "end_date":"14-08-2013 23:08"
+      }
+   
+   ,
+      {
+         "item":1,
+         "label":"Truck 1"
+      },
+      {
+         "key":2,
+         "label":"Truck 2"
+      },
+      {
+         "id":2,
+         "label":"Truck 2"
+      }
+   ]}

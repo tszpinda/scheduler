@@ -16,34 +16,60 @@ type jsonTime struct {
 }
 
 func (t jsonTime) MarshalJSON() ([]byte, error) {
-	s := t.Time.Format("02-01-2006 3:4")
+	s := t.Time.Format("02-01-2006 15:04")
 	return json.Marshal(s)
 }
 
 func (t jsonTime) String() string {
-	return time.Time(t.Time).Format("02-01-2006 3:4")
+	return time.Time(t.Time).Format("02-01-2006 15:04")
+}
+
+type Truck struct {
+	Id    int64  `json:"key"`
+	Label string `json:"label"`
 }
 
 type Event struct {
-	Id        float64  `json:"id"`
+	Id        int64    `json:"id"`
+	TruckId   int64    `json:"truck_id"`
 	Text      string   `json:"text"`
 	StartDate jsonTime `json:"start_date"`
 	EndDate   jsonTime `json:"end_date"`
 }
 
-type SchedulerService struct {
-	gorest.RestService `root:"/scheduler/" consumes:"application/json" produces:"application/json"`
-	getSchedule        gorest.EndPoint `method:"GET" path:"/event/{resourceId:int}" output:"[]Event"`
+type Schedule struct {
+	Events []Event `json:"events"`
+	Trucks []Truck `json:"trucks"`
 }
 
-func (serv SchedulerService) GetSchedule(resourceId int) (e []Event) {
-	endTime1 := time.Now().Add(time.Duration(2) * time.Hour)
+type SchedulerService struct {
+	gorest.RestService `root:"/scheduler/" consumes:"application/json" produces:"application/json"`
+	getSchedule        gorest.EndPoint `method:"GET" path:"/events/{resourceId:int}" output:"Schedule"`
+	//getSchedule        gorest.EndPoint `method:"GET" path:"/resources" output:"[]Resource"`
+}
 
-	e1 := Event{1, "Replace boiler", jsonTime{time.Now()}, jsonTime{endTime1}}
-	e2 := Event{2, "Replace bitchen", jsonTime{time.Now()}, jsonTime{time.Now()}}
+func (serv SchedulerService) GetSchedule(resourceId int) (s Schedule) {
+	e := make([]Event, 0)
+	t := make([]Truck, 0)
+
+	startTime1 := time.Now().Add(time.Duration(2) * time.Hour)
+	endTime1 := time.Now().Add(time.Duration(2) * time.Hour)
+	startTime2 := time.Now().Add(time.Duration(-3) * time.Hour)
+	endTime2 := time.Now().Add(time.Duration(1) * time.Hour)
+
+	e1 := Event{1, 1, "BA1 3AX - 15T Concrete", jsonTime{startTime1}, jsonTime{endTime1}}
+	e2 := Event{2, 2, "BA1 3AX - Hire Pickup", jsonTime{startTime2}, jsonTime{endTime2}}
 	e = append(e, e1)
 	e = append(e, e2)
-	fmt.Println("incoming request v%", e)
+
+	t1 := Truck{1, "Truck 1"}
+	t2 := Truck{2, "Truck 2"}
+	t = append(t, t1)
+	t = append(t, t2)
+
+	s.Events = e
+	s.Trucks = t
+	fmt.Println("incoming request v%", s)
 	return
 }
 
