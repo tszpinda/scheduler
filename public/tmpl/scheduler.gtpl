@@ -10,7 +10,7 @@
       <script type="text/javascript" charset="utf-8">
          function init() {
             
-            scheduler.config.xml_date="%d-%m-%Y %H:%i";
+            
 
       /*      var sections=[333
                {key:1, label:"James Smith"},
@@ -37,6 +37,7 @@
       
 */
             scheduler.init('scheduler',new Date(),"week");
+            scheduler.config.xml_date="%d-%m-%Y %H:%i";
             scheduler.load("/scheduler/event/1", "json");
             
          }
