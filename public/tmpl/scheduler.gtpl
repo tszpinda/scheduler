@@ -17,6 +17,7 @@
 
          $(function(){
              var sections = scheduler.serverList("type");
+             
              var asections = [ 
                {key:1, label:"Truck - 10T VA56XZA"},
                {key:2, label:"Truck - 15T AA55ASA"},
@@ -34,47 +35,48 @@
 
 
              $("#scheduler").dhx_scheduler({
-                 xml_date:"%d-%m-%Y %H:%i",
+                 //xml_date:"%d-%m-%Y %H:%i",
+                 xml_date:"%Y-%m-%d %H:%i",
                  date:new Date(),
                  mode:"unit",
                  details_on_create:true,
                  details_on_dblclick:true
              });
           
-             //scheduler.load("/scheduler/events/1", "json");
-             scheduler.load("/ui/static/data.json", "json");
+             scheduler.load("/scheduler/events/1", "json");
+             //scheduler.load("/ui/static/data.json", "json");
              //scheduler.load("/ui/static/data.xml");
-         });
-         //function init() {
-            
-            
 
-      /*      var sections=[333
-               {key:1, label:"James Smith"},
-               {key:2, label:"John Williams"},
-               {key:3, label:"David Miller"},
-               {key:4, label:"Linda Brown"}
-            ];
-            
-            scheduler.locale.labels.unit_tab = "Trucks"
-            scheduler.locale.labels.section_custom="Assigned to";
-            scheduler.config.first_hour = 8;
-            scheduler.config.multi_day = true;
-            scheduler.config.details_on_create=true;
-            scheduler.config.details_on_dblclick=true;
-            scheduler.config.xml_date="%Y-%m-%d %H:%i";
-            scheduler.templates.event_class=function(s,e,ev){ return ev.custom?"custom":""; };
-            scheduler.config.lightbox.sections=[   
-               {name:"description", height:130, map_to:"text", type:"textarea" , focus:true},
-               {name:"custom", height:23, type:"select", options:sections, map_to:"section_id" },
-               {name:"time", height:72, type:"time", map_to:"auto"}
-            ]
-      
-            scheduler.createUnitsView("unit","section_id",sections);
-      
-*/
-            
-         //}
+             scheduler.renderEvent = function(container, ev) {
+                var container_width = container.style.width; // e.g. "105px"
+             
+                // move section
+                var html = "<div class='dhx_event_move my_event_move' style='width: " + 
+                container_width + "'></div>";
+             
+                // container for event contents
+                html+= "<div class='my_event_body'>";
+                html += "<span class='event_date'>";
+                //two options here:show only start date for short events or start+end for long
+                if ((ev.end_date - ev.start_date)/60000>40){//if event is longer than 40 minutes
+                    html += scheduler.templates.event_header(ev.start_date, ev.end_date, ev);
+                    html += "</span><br/>";
+                } else {
+                    html += scheduler.templates.event_date(ev.start_date) + "</span>";
+                }
+                // displaying event text
+                html += "<span>" + scheduler.templates.event_text(ev.start_date,ev.end_date,ev)+
+                "</span>" + "</div>";
+             
+                // resize section
+                html += "<div class='dhx_event_resize my_event_resize' style='width: " +
+                container_width + "'></div>";
+             
+                container.innerHTML = html;
+                return true; //required, true - display a custom form, false - the default form
+            };
+         });
+
       </script>
    </head>
    <body>

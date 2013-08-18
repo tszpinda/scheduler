@@ -16,30 +16,33 @@ type jsonTime struct {
 }
 
 func (t jsonTime) MarshalJSON() ([]byte, error) {
-	s := t.Time.Format("02-01-2006 15:04")
+	s := t.Time.Format("2006-01-02 15:04")
 	return json.Marshal(s)
 }
 
 func (t jsonTime) String() string {
-	return time.Time(t.Time).Format("02-01-2006 15:04")
+	return time.Time(t.Time).Format("2006-01-02 15:04")
 }
 
 type Truck struct {
-	Id    int64  `json:"key"`
+	Id    int64  `json:"id"`
+	Value int64  `json:"value"`
 	Label string `json:"label"`
 }
 
 type Event struct {
 	Id        int64    `json:"id"`
-	TruckId   int64    `json:"truck_id"`
+	TruckId   int64    `json:"type"`
 	Text      string   `json:"text"`
 	StartDate jsonTime `json:"start_date"`
 	EndDate   jsonTime `json:"end_date"`
 }
-
+type Collections struct {
+	Trucks []Truck `json:"type"`
+}
 type Schedule struct {
-	Events []Event `json:"events"`
-	Trucks []Truck `json:"trucks"`
+	Events      []Event `json:"data"`
+	Collections `json:"collections"`
 }
 
 type SchedulerService struct {
@@ -62,13 +65,14 @@ func (serv SchedulerService) GetSchedule(resourceId int) (s Schedule) {
 	e = append(e, e1)
 	e = append(e, e2)
 
-	t1 := Truck{1, "Truck 1"}
-	t2 := Truck{2, "Truck 2"}
+	t1 := Truck{1, 1, "Truck 1"}
+	t2 := Truck{2, 2, "Truck 2"}
 	t = append(t, t1)
 	t = append(t, t2)
 
 	s.Events = e
-	s.Trucks = t
+	s.Collections.Trucks = t
+
 	fmt.Println("incoming request v%", s)
 	return
 }
