@@ -2,15 +2,237 @@
 This software is allowed to use under GPL or you need to obtain Commercial or Enterise License
 to use it in non-GPL project. Please contact sales@dhtmlx.com for details
 */
-scheduler._props={};
-scheduler.createUnitsView=function(a,g,j,f,k,l){if(typeof a=="object")j=a.list,g=a.property,f=a.size||0,k=a.step||1,l=a.skip_incorrect,a=a.name;scheduler._props[a]={map_to:g,options:j,step:k,position:0};if(f>scheduler._props[a].options.length)scheduler._props[a]._original_size=f,f=0;scheduler._props[a].size=f;scheduler._props[a].skip_incorrect=l||!1;scheduler.date[a+"_start"]=scheduler.date.day_start;scheduler.templates[a+"_date"]=function(a){return scheduler.templates.day_date(a)};scheduler.templates[a+
-"_scale_date"]=function(c){var h=scheduler._props[a].options;if(!h.length)return"";var g=(scheduler._props[a].position||0)+Math.floor((scheduler._correct_shift(c.valueOf(),1)-scheduler._min_date.valueOf())/864E5);return h[g].css?"<span class='"+h[g].css+"'>"+h[g].label+"</span>":h[g].label};scheduler.date["add_"+a]=function(a,g){return scheduler.date.add(a,g,"day")};scheduler.date["get_"+a+"_end"]=function(c){return scheduler.date.add(c,scheduler._props[a].size||scheduler._props[a].options.length,
-"day")};scheduler.attachEvent("onOptionsLoad",function(){for(var c=scheduler._props[a],g=c.order={},f=c.options,i=0;i<f.length;i++)g[f[i].key]=i;if(c._original_size&&c.size==0)c.size=c._original_size,delete c.original_size;c.size>f.length?(c._original_size=c.size,c.size=0):c.size=c._original_size||c.size;scheduler._date&&scheduler._mode==a&&scheduler.setCurrentView(scheduler._date,scheduler._mode)});scheduler.callEvent("onOptionsLoad",[])};
-scheduler.scrollUnit=function(a){var g=scheduler._props[this._mode];if(g)g.position=Math.min(Math.max(0,g.position+a),g.options.length-g.size),this.update_view()};
-(function(){var a=function(b){var d=scheduler._props[scheduler._mode];if(d&&d.order&&d.skip_incorrect){for(var a=[],e=0;e<b.length;e++)typeof d.order[b[e][d.map_to]]!="undefined"&&a.push(b[e]);b.splice(0,b.length);b.push.apply(b,a)}return b},g=scheduler._pre_render_events_table;scheduler._pre_render_events_table=function(b,d){b=a(b);return g.apply(this,[b,d])};var j=scheduler._pre_render_events_line;scheduler._pre_render_events_line=function(b,d){b=a(b);return j.apply(this,[b,d])};var f=function(b,
-d){if(b&&typeof b.order[d[b.map_to]]=="undefined"){var a=scheduler,e=864E5,c=Math.floor((d.end_date-a._min_date)/e);d[b.map_to]=b.options[Math.min(c+b.position,b.options.length-1)].key;return!0}},k=scheduler._reset_scale,l=scheduler.is_visible_events;scheduler.is_visible_events=function(b){var d=l.apply(this,arguments);if(d){var a=scheduler._props[this._mode];if(a&&a.size){var e=a.order[b[a.map_to]];if(e<a.position||e>=a.size+a.position)return!1}}return d};scheduler._reset_scale=function(){var b=
-scheduler._props[this._mode],a=k.apply(this,arguments);if(b){this._max_date=this.date.add(this._min_date,1,"day");for(var c=this._els.dhx_cal_data[0].childNodes,e=0;e<c.length;e++)c[e].className=c[e].className.replace("_now","");if(b.size&&b.size<b.options.length){var g=this._els.dhx_cal_header[0],f=document.createElement("DIV");if(b.position)f.className="dhx_cal_prev_button",f.style.cssText="left:1px;top:2px;position:absolute;",f.innerHTML="&nbsp;",g.firstChild.appendChild(f),f.onclick=function(){scheduler.scrollUnit(b.step*
--1)};if(b.position+b.size<b.options.length)f=document.createElement("DIV"),f.className="dhx_cal_next_button",f.style.cssText="left:auto; right:0px;top:2px;position:absolute;",f.innerHTML="&nbsp;",g.lastChild.appendChild(f),f.onclick=function(){scheduler.scrollUnit(b.step)}}}return a};var c=scheduler._get_event_sday;scheduler._get_event_sday=function(b){var a=scheduler._props[this._mode];return a?(f(a,b),a.order[b[a.map_to]]-a.position):c.call(this,b)};var h=scheduler.locate_holder_day;scheduler.locate_holder_day=
-function(a,d,c){var e=scheduler._props[this._mode];return e&&c?(f(e,c),e.order[c[e.map_to]]*1+(d?1:0)-e.position):h.apply(this,arguments)};var m=scheduler._mouse_coords;scheduler._mouse_coords=function(){var a=scheduler._props[this._mode],d=m.apply(this,arguments);if(a){if(!this._drag_event)this._drag_event={};var c=this._drag_event;if(this._drag_id&&this._drag_mode)c=this.getEvent(this._drag_id),this._drag_event._dhx_changed=!0;var e=Math.min(d.x+a.position,a.options.length-1),f=a.map_to;d.section=
-c[f]=a.options[e].key;d.x=0}return d};var i=scheduler._time_order;scheduler._time_order=function(a){var d=scheduler._props[this._mode];d?a.sort(function(a,b){return d.order[a[d.map_to]]>d.order[b[d.map_to]]?1:-1}):i.apply(this,arguments)};scheduler.attachEvent("onEventAdded",function(a,d){if(this._loading)return!0;for(var c in scheduler._props){var e=scheduler._props[c];if(typeof d[e.map_to]=="undefined")d[e.map_to]=e.options[0].key}return!0});scheduler.attachEvent("onEventCreated",function(a,c){var g=
-scheduler._props[this._mode];if(g&&c){var e=this.getEvent(a);this._mouse_coords(c);f(g,e);this.event_updated(e)}return!0})})();
+scheduler._props = {};
+scheduler.createUnitsView=function(name,property,list,size,step,skip_incorrect){
+	if (typeof name == "object"){
+		list = name.list;
+		property = name.property;
+		size = name.size||0;
+		step = name.step||1;
+		skip_incorrect = name.skip_incorrect;
+		name = name.name;		
+	}
+
+	scheduler._props[name]={map_to:property, options:list, step:step, position:0 };
+    if(size>scheduler._props[name].options.length){
+        scheduler._props[name]._original_size = size;
+        size = 0;
+    }
+    scheduler._props[name].size = size;
+	scheduler._props[name].skip_incorrect = skip_incorrect||false;
+	
+	scheduler.date[name+"_start"]= scheduler.date.day_start;
+	scheduler.templates[name+"_date"] = function(date){
+		return scheduler.templates.day_date(date);
+	};
+
+	scheduler._get_unit_index = function(unit_view, date) {
+		var original_position = unit_view.position || 0;
+		var date_position = Math.floor((scheduler._correct_shift(+date, 1) - +scheduler._min_date) / (60 * 60 * 24 * 1000));
+		return original_position + date_position;
+	};
+	scheduler.templates[name + "_scale_text"] = function(id, label, option) {
+		if (option.css) {
+			return "<span class='" + option.css + "'>" + label + "</span>";
+		} else {
+			return label;
+		}
+	};
+	scheduler.templates[name+"_scale_date"] = function(date) {
+		var unit_view = scheduler._props[name];
+		var list = unit_view.options;
+		if (!list.length) return "";
+		var index = scheduler._get_unit_index(unit_view, date);
+		var option = list[index];
+		return scheduler.templates[name + "_scale_text"](option.key, option.label, option);
+	};
+
+	scheduler.date["add_"+name]=function(date,inc){ return scheduler.date.add(date,inc,"day"); };
+	scheduler.date["get_"+name+"_end"]=function(date){
+		return scheduler.date.add(date,scheduler._props[name].size||scheduler._props[name].options.length,"day");
+	};
+	
+	scheduler.attachEvent("onOptionsLoad",function(){
+        var pr = scheduler._props[name];
+		var order = pr.order = {};
+		var list = pr.options;
+		for(var i=0; i<list.length;i++)
+			order[list[i].key]=i;
+        if(pr._original_size && pr.size==0){
+            pr.size = pr._original_size;
+            delete pr.original_size;
+        }
+		if(pr.size > list.length) {
+            pr._original_size = pr.size;
+            pr.size = 0;
+        }
+        else
+            pr.size = pr._original_size||pr.size;
+		if (scheduler._date && scheduler._mode == name) 
+			scheduler.setCurrentView(scheduler._date, scheduler._mode);
+	});
+	scheduler.callEvent("onOptionsLoad",[]);
+};
+scheduler.scrollUnit=function(step){
+	var pr = scheduler._props[this._mode];
+	if (pr){
+		pr.position=Math.min(Math.max(0,pr.position+step),pr.options.length-pr.size);
+		this.update_view();		
+	}
+};
+(function(){
+	var _removeIncorrectEvents = function(evs) {
+		var pr = scheduler._props[scheduler._mode];
+		if(pr && pr.order && pr.skip_incorrect) {
+            var correct_events = [];
+			for(var i=0; i<evs.length; i++) {
+				if(typeof pr.order[evs[i][pr.map_to]] != "undefined") {
+                    correct_events.push(evs[i]);
+				}
+			}
+            evs.splice(0,evs.length);
+			evs.push.apply(evs,correct_events);
+		}
+		return evs;
+	};
+	var old_pre_render_events_table = scheduler._pre_render_events_table;
+	scheduler._pre_render_events_table=function(evs,hold) {
+		evs = _removeIncorrectEvents(evs);
+		return old_pre_render_events_table.apply(this, [evs, hold]);
+	};
+	var old_pre_render_events_line = scheduler._pre_render_events_line;
+	scheduler._pre_render_events_line = function(evs,hold){ 
+		evs = _removeIncorrectEvents(evs);
+		return old_pre_render_events_line.apply(this, [evs, hold]);
+	};
+	var fix_und=function(pr,ev){
+		if (pr && typeof pr.order[ev[pr.map_to]] == "undefined"){
+			var s = scheduler;
+			var dx = 24*60*60*1000;
+			var ind = Math.floor((ev.end_date - s._min_date)/dx);
+			//ev.end_date = new Date(s.date.time_part(ev.end_date)*1000+s._min_date.valueOf());
+			//ev.start_date = new Date(s.date.time_part(ev.start_date)*1000+s._min_date.valueOf());
+			ev[pr.map_to] = pr.options[Math.min(ind+pr.position,pr.options.length-1)].key;
+			return true;
+		}
+	};
+	var t = scheduler._reset_scale;
+    
+	var oldive = scheduler.is_visible_events;
+	scheduler.is_visible_events = function(e){
+		var res = oldive.apply(this,arguments);
+		if (res){
+			var pr = scheduler._props[this._mode];
+			if (pr && pr.size){
+				var val = pr.order[e[pr.map_to]];
+				if (val < pr.position || val >= pr.size+pr.position )
+					return false;
+			}
+		}
+		return res;
+	};
+	scheduler._reset_scale = function(){
+		var pr = scheduler._props[this._mode];
+		var ret = t.apply(this,arguments);
+		if (pr){
+			this._max_date=this.date.add(this._min_date,1,"day");
+				
+				var d = this._els["dhx_cal_data"][0].childNodes;
+				for (var i=0; i < d.length; i++)
+					d[i].className = d[i].className.replace("_now",""); //clear now class
+				
+			if (pr.size && pr.size < pr.options.length){
+				
+				var h = this._els["dhx_cal_header"][0];
+				var arrow = document.createElement("DIV");				
+				if (pr.position){
+					arrow.className = "dhx_cal_prev_button";
+					arrow.style.cssText="left:1px;top:2px;position:absolute;"
+					arrow.innerHTML = "&nbsp;"				
+					h.firstChild.appendChild(arrow);
+					arrow.onclick=function(){
+						scheduler.scrollUnit(pr.step*-1);
+					}
+				}
+				if (pr.position+pr.size<pr.options.length){
+					arrow = document.createElement("DIV");
+					arrow.className = "dhx_cal_next_button";
+					arrow.style.cssText="left:auto; right:0px;top:2px;position:absolute;"
+					arrow.innerHTML = "&nbsp;"		
+					h.lastChild.appendChild(arrow);
+					arrow.onclick=function(){
+						scheduler.scrollUnit(pr.step);
+					}
+				}
+			}
+		}
+		return ret;
+		
+	};
+	var r = scheduler._get_event_sday;
+	scheduler._get_event_sday=function(ev){
+		var pr = scheduler._props[this._mode];
+		if (pr){
+			fix_und(pr,ev);
+			return pr.order[ev[pr.map_to]]-pr.position;	
+		}
+		return r.call(this,ev);
+	};
+	var l = scheduler.locate_holder_day;
+	scheduler.locate_holder_day=function(a,b,ev){
+		var pr = scheduler._props[this._mode];
+		if (pr && ev) {
+			fix_und(pr,ev);
+			return pr.order[ev[pr.map_to]]*1+(b?1:0)-pr.position;	
+		}
+		return l.apply(this,arguments);
+	};
+	var p = scheduler._mouse_coords;
+	scheduler._mouse_coords=function(){
+		var pr = scheduler._props[this._mode];
+		var pos=p.apply(this,arguments);
+		if (pr){
+			if(!this._drag_event) this._drag_event = {};
+			var ev = this._drag_event;
+			if (this._drag_id && this._drag_mode){
+				ev = this.getEvent(this._drag_id);
+				this._drag_event._dhx_changed = true;
+			}
+			var unit_ind = Math.min(pos.x+pr.position,pr.options.length-1);
+			var key = pr.map_to;
+			pos.section = ev[key]=(pr.options[unit_ind]||{}).key;
+			pos.x = 0;
+		}
+		pos.force_redraw = true;
+		return pos;
+	};
+	var o = scheduler._time_order;
+	scheduler._time_order = function(evs){
+		var pr = scheduler._props[this._mode];
+		if (pr){
+			evs.sort(function(a,b){
+				return pr.order[a[pr.map_to]]>pr.order[b[pr.map_to]]?1:-1;
+			});
+		} else
+			o.apply(this,arguments);
+	};
+	scheduler.attachEvent("onEventAdded",function(id,ev){
+		if (this._loading) return true;
+		for (var a in scheduler._props){
+			var pr = scheduler._props[a];
+			if (typeof ev[pr.map_to] == "undefined")
+				ev[pr.map_to] = pr.options[0].key;
+		}
+		return true;
+	});
+	scheduler.attachEvent("onEventCreated",function(id,n_ev){
+		var pr = scheduler._props[this._mode];
+		if (pr && n_ev){
+			var ev = this.getEvent(id);
+			this._mouse_coords(n_ev);
+			fix_und(pr,ev);
+			this.event_updated(ev);
+		}
+		return true;
+	})		
+})();

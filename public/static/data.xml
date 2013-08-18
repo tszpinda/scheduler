@@ -1,0 +1,31 @@
+<data>
+<event id="1">
+<start_date>04-08-2013 00:00:00</start_date>
+<end_date>04-08-2013 00:00:00</end_date>
+<text>dblclick me!</text>
+<type>1</type>
+</event>
+<event id="2">
+<start_date>14-08-2013 00:00:00</start_date>
+<end_date>14-08-2013 00:00:00</end_date>
+<text>and me!</text>
+<type>2</type>
+</event>
+<event id="3">
+<start_date>14-08-2013 20:00:00</start_date>
+<end_date>14-08-2013 23:00:00</end_date>
+<text>and me too!</text>
+<type>3</type>
+</event>
+<event id="4">
+<start_date>14-08-2013 08:00:00</start_date>
+<end_date>14-08-2013 14:10:00</end_date>
+<text>Type 2 event</text>
+<type>2</type>
+</event>
+<coll_options for="type">
+<item value="1" label="Simple"></item>
+<item value="2" label="Complex"></item>
+<item value="3" label="Unknown"></item>
+</coll_options>
+</data>
