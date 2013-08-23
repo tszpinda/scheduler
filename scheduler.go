@@ -55,10 +55,14 @@ func (serv SchedulerService) GetSchedule(resourceId int) (s Schedule) {
 	e := make([]Event, 0)
 	t := make([]Truck, 0)
 
-	startTime1 := time.Now().Add(time.Duration(2) * time.Hour)
-	endTime1 := time.Now().Add(time.Duration(2) * time.Hour)
-	startTime2 := time.Now().Add(time.Duration(-3) * time.Hour)
-	endTime2 := time.Now().Add(time.Duration(1) * time.Hour)
+	const format = "2006-01-02 15:04"
+	startTime1, _ := time.Parse(format, "2013-08-21 08:05")
+
+	//startTime1 := time.Now().Add(time.Duration(2) * time.Hour)
+	endTime1 := startTime1.Add(time.Duration(2) * time.Hour)
+	startTime2, _ := time.Parse(format, "2013-08-21 08:35")
+	//startTime2 := time.Now().Add(time.Duration(-3) * time.Hour)
+	endTime2 := startTime2.Add(time.Duration(1) * time.Hour)
 
 	e1 := Event{1, 1, "BA1 3AX - 15T Concrete", jsonTime{startTime1}, jsonTime{endTime1}}
 	e2 := Event{2, 2, "BA1 3AX - Hire Pickup", jsonTime{startTime2}, jsonTime{endTime2}}
