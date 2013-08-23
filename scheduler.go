@@ -84,7 +84,7 @@ func (serv SchedulerService) GetSchedule(resourceId int) (s Schedule) {
 func main() {
 	gorest.RegisterService(new(SchedulerService))
 
-	view.Mount()
+	view.Init()
 	http.Handle("/", gorest.Handle())
 
 	var port = os.Getenv("PORT")

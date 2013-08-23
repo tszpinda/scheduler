@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Mount() {
+func Init() {
 	//serve public/static directory
 	fileHandler := http.StripPrefix("/ui/static/", http.FileServer(http.Dir("./public/static")))
 	http.Handle("/ui/static/", fileHandler)

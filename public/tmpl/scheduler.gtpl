@@ -87,10 +87,21 @@
             });
             data.load("/ui/static/holdingArea.json", "json");
 
-            scheduler.attachEvent("onExternalDragIn", function(id, source, e) {
-              var label = data.getItemText(data._dragged[0].id);
-              scheduler.getEvent(id).text = label;
+            scheduler.attachEvent("onExternalDragIn", function(id, source, mouseEvent) {
+              //debugger
+              //var label = data.getItemText(data._dragged[0].id);
+              //scheduler.getEvent(id).text = label;
 
+              //get id for item just dragged
+              //source.id
+              console.log(source.parentObject.id)
+              var context = dhtmlx.DragControl.getContext();
+              var item = context.from.get(context.source[0]);
+              console.log(item)
+              //if(source.source)
+                //scheduler.getEvent(id).text = source.source.getAttribute('name');
+              //else
+                //scheduler.getEvent(id).text = source.getAttribute('name');
               return true;
             });
 
