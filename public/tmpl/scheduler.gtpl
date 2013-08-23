@@ -7,22 +7,23 @@
       
       <link href="/ui/static/bootstrap/css/main.css" rel="stylesheet" media="screen">
       <link href="/ui/static/scheduler/dhtmlxscheduler.css" rel="stylesheet" media="screen">
-      <link href="/ui/static/dataview/dhtmlxdataview.css" rel="stylesheet" media="screen">
 
       <script src="/ui/static/js/jquery.js"></script>
       <script src="/ui/static/bootstrap/js/bootstrap.js"></script>
       <script src="/ui/static/js/main.js"></script>
+
+      <script src="/ui/static/js/jquery.ui.core.js"></script>
+      <script src="/ui/static/js/jquery.ui.widget.js"></script>
+      <script src="/ui/static/js/jquery.ui.mouse.js"></script>
+      <script src="/ui/static/js/jquery.ui.draggable.js"></script>      
+      <script src="/ui/static/js/jquery.ui.droppable.js"></script>
+
       <script src="/ui/static/scheduler/dhtmlxscheduler.js"></script>
       <script src="/ui/static/scheduler/dhtmlxscheduler-units.js"></script>
-      <script src='/ui/static/scheduler/dhtmlxscheduler_outerdrag.js' type="text/javascript"></script>
-
-      <script src="/ui/static/dataview/dhtmlxdataview.js"></script>
-
+      
       <script type="text/javascript" charset="utf-8">
 
          $(function(){
-             dhtmlx.compat("dnd");
-
              var sections = scheduler.serverList("type");
                  
              scheduler.createUnitsView({
@@ -76,28 +77,34 @@
                 return true; //required, true - display a custom form, false - the default form
             };*/
 
-            var data = new dhtmlXDataView({
-              container:"holdingArea",
-              type:{
-                template:"#name#",
-                height:35,
-                template_loading:"Loading...",                
-              },
-              drag: true
-            });
-            data.load("/ui/static/holdingArea.json", "json");
-
-            scheduler.attachEvent("onExternalDragIn", function(id, source, e) {
-              var label = data.getItemText(data._dragged[0].id);
-              scheduler.getEvent(id).text = label;
+             scheduler.attachEvent("onExternalDragIn", function(id, source, e) {
+               var label = data.getItemText(data._dragged[0].id);
+               scheduler.getEvent(id).text = label;
 
               return true;
-            });
+             });
 
+            $( "#holdingArea" ).draggable({ revert: "invalid" });
+
+            scheduler.attachEvent("onXLE", function(){
+              console.log('onXLE');
+              $( ".dhx_scale_holder" ).droppable({
+                activeClass: "ui-state-hover",
+                hoverClass: "ui-state-active",
+                drop: function( event, ui ) {
+                  $( this )
+                    .addClass( "ui-state-highlight" )
+                    .find( ".dhx_body" )
+                      .html( "Dropped!" );
+                }
+              });
+            });
          });
       </script>
    </head>
    <body>
+
+
             <div id="holdingArea" ></div>
             <div id="scheduler" class="dhx_cal_container">
                <div class="dhx_cal_navline">
