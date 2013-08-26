@@ -7,24 +7,26 @@
       
       <link href="/ui/static/bootstrap/css/main.css" rel="stylesheet" media="screen">
       <link href="/ui/static/scheduler/dhtmlxscheduler.css" rel="stylesheet" media="screen">
+      <link href="/ui/static/dataview/dhtmlxdataview.css" rel="stylesheet" media="screen">
+
       <script src="/ui/static/js/jquery.js"></script>
       <script src="/ui/static/bootstrap/js/bootstrap.js"></script>
       <script src="/ui/static/js/main.js"></script>
-
       <script src="/ui/static/scheduler/dhtmlxscheduler.js"></script>
       <script src="/ui/static/scheduler/dhtmlxscheduler-units.js"></script>
+      <script src='/ui/static/scheduler/dhtmlxscheduler_outerdrag.js' type="text/javascript"></script>
+
+      <script src="/ui/static/dataview/dhtmlxdataview.js"></script>
+
       <script type="text/javascript" charset="utf-8">
 
          $(function(){
-             var sections = scheduler.serverList("type");
-             
-             var asections = [ 
-               {key:1, label:"Truck - 10T VA56XZA"},
-               {key:2, label:"Truck - 15T AA55ASA"},
-               {key:3, label:"Truck - 20T RA59KDA"},
-               {key:4, label:"Truck - 20T XA56CAA"}
-             ];
-             scheduler.createUnitsView({
+            var xhtmlDateFormat = "%Y-%m-%d %H:%i";
+            dhtmlx.compat("dnd");
+
+            var sections = scheduler.serverList("type");
+                 
+            scheduler.createUnitsView({
                 name:"unit",
                 property:"type",
                 list:sections});
@@ -34,19 +36,18 @@
             scheduler.locale.labels.unit_tab = "Trucks"
 
 
-             $("#scheduler").dhx_scheduler({
+            $("#scheduler").dhx_scheduler({
                  //xml_date:"%d-%m-%Y %H:%i",
-                 xml_date:"%Y-%m-%d %H:%i",
-                 date:new Date(),
+               xml_date:xhtmlDateFormat,
+               date:new Date(),
                  mode:"unit",
                  details_on_create:true,
                  details_on_dblclick:true
-             });
+            });
           
-             scheduler.load("/scheduler/events/1", "json");
-             //scheduler.load("/ui/static/data.json", "json");
-             //scheduler.load("/ui/static/data.xml");
+             scheduler.load("/api/events/1", "json");
 
+/*
              scheduler.renderEvent = function(container, ev) {
                 var container_width = container.style.width; // e.g. "105px"
              
@@ -74,28 +75,47 @@
              
                 container.innerHTML = html;
                 return true; //required, true - display a custom form, false - the default form
-            };
-         });
+            };*/
 
+            var data = new dhtmlXDataView({
+              container:"holdingArea",
+              type:{
+                template:"#name#",
+                height:35,
+                template_loading:"Loading...",                
+              },
+              drag: true
+            });
+            data.load("/ui/static/holdingArea.json", "json");
+
+            scheduler.attachEvent("onExternalDragIn", function(id, source, mouseEvent) {
+              var context = dhtmlx.DragControl.getContext();
+              var newDelivery = context.from.get(context.source[0]);
+              //scheduler.getEvent(id).text = label;
+
+              return true;
+            });
+
+         });
       </script>
    </head>
    <body>
-      <b>Scheduler</b>
-      <div id="scheduler" class="dhx_cal_container" style='width:100%; height:100%;'>
-         <div class="dhx_cal_navline">
-            <div class="dhx_cal_prev_button">&nbsp;</div>
-            <div class="dhx_cal_next_button">&nbsp;</div>
-            <div class="dhx_cal_today_button"></div>
-            <div class="dhx_cal_date"></div>
-            <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-            <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-            <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-            <div class="dhx_cal_tab" name="unit_tab" style="right:280px;"></div>
-         </div>
-         <div class="dhx_cal_header">
-         </div>
-         <div class="dhx_cal_data">
-         </div>
-      </div>
+            <div id="holdingArea" ></div>
+            <div id="scheduler" class="dhx_cal_container">
+               <div class="dhx_cal_navline">
+                  <div class="dhx_cal_prev_button">&nbsp;</div>
+                  <div class="dhx_cal_next_button">&nbsp;</div>
+                  <div class="dhx_cal_today_button"></div>
+                  <div class="dhx_cal_date"></div>
+                  <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+                  <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+                  <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+                  <div class="dhx_cal_tab" name="unit_tab" style="right:280px;"></div>
+               </div>
+               <div class="dhx_cal_header">
+               </div>
+               <div class="dhx_cal_data">
+               </div>
+            </div>
    </body>
 </html>
