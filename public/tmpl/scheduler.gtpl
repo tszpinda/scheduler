@@ -21,11 +21,12 @@
       <script type="text/javascript" charset="utf-8">
 
          $(function(){
-             dhtmlx.compat("dnd");
+            var xhtmlDateFormat = "%Y-%m-%d %H:%i";
+            dhtmlx.compat("dnd");
 
-             var sections = scheduler.serverList("type");
+            var sections = scheduler.serverList("type");
                  
-             scheduler.createUnitsView({
+            scheduler.createUnitsView({
                 name:"unit",
                 property:"type",
                 list:sections});
@@ -35,16 +36,16 @@
             scheduler.locale.labels.unit_tab = "Trucks"
 
 
-             $("#scheduler").dhx_scheduler({
+            $("#scheduler").dhx_scheduler({
                  //xml_date:"%d-%m-%Y %H:%i",
-                 xml_date:"%Y-%m-%d %H:%i",
-                 date:new Date(),
+               xml_date:xhtmlDateFormat,
+               date:new Date(),
                  mode:"unit",
                  details_on_create:true,
                  details_on_dblclick:true
-             });
+            });
           
-             scheduler.load("/scheduler/events/1", "json");
+             scheduler.load("/api/events/1", "json");
 
 /*
              scheduler.renderEvent = function(container, ev) {
@@ -88,20 +89,10 @@
             data.load("/ui/static/holdingArea.json", "json");
 
             scheduler.attachEvent("onExternalDragIn", function(id, source, mouseEvent) {
-              //debugger
-              //var label = data.getItemText(data._dragged[0].id);
+              var context = dhtmlx.DragControl.getContext();
+              var newDelivery = context.from.get(context.source[0]);
               //scheduler.getEvent(id).text = label;
 
-              //get id for item just dragged
-              //source.id
-              console.log(source.parentObject.id)
-              var context = dhtmlx.DragControl.getContext();
-              var item = context.from.get(context.source[0]);
-              console.log(item)
-              //if(source.source)
-                //scheduler.getEvent(id).text = source.source.getAttribute('name');
-              //else
-                //scheduler.getEvent(id).text = source.getAttribute('name');
               return true;
             });
 

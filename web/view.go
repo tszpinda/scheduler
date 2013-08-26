@@ -1,13 +1,12 @@
 package web
 
 import (
-	//"fmt"
 	"html/template"
 	"log"
 	"net/http"
 )
 
-func Init() {
+func InitView() {
 	//serve public/static directory
 	fileHandler := http.StripPrefix("/ui/static/", http.FileServer(http.Dir("./public/static")))
 	http.Handle("/ui/static/", fileHandler)
